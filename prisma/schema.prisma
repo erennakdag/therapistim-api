@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id        String    @id @default(uuid())
+  name      String
+  email     String
+  password  String
+  phone     String
+  dateOfBirth DateTime
+  location  String?
+  hasPrivateInsurance Boolean?
+  insuranceProvider String?
+}
+
+model Therapist {
+  id        String    @id @default(uuid())
+  name      String
+  email     String
+  password  String
+  phone     String
+  bio       String
+  address   String
+  languages  Json
+  specialties Json
+  canWriteMedication Boolean
+  website String?
+  location  String?
+  acceptsPrivateInsurance Boolean?
+  insuranceProvider String?
+}
