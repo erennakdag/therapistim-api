@@ -16,7 +16,7 @@ model Patient {
   email     String
   password  String
   phone     String
-  dateOfBirth DateTime
+  dateOfBirth String
   location  String?
   hasPrivateInsurance Boolean?
   insuranceProvider String?

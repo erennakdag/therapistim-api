@@ -11,7 +11,7 @@ export class PatientController {
     return await this.patientService.getPatients();
   }
 
-  @Post('new')
+  @Post('/new')
   async createPatient(
     @Body() data: Prisma.PatientCreateInput,
   ): Promise<PatientModel> {
