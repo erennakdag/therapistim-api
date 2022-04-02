@@ -17,6 +17,7 @@ model Patient {
   password  String
   phone     String
   dateOfBirth String
+  gender String @default("Non-Binary")
   location  String?
   hasPrivateInsurance Boolean?
   insuranceProvider String?
