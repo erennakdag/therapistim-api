@@ -13,11 +13,11 @@ datasource db {
 model Patient {
   id        String    @id @default(uuid())
   name      String
-  email     String
+  email     String    @unique
   password  String
   phone     String
   dateOfBirth String
-  gender String @default("Non-Binary")
+  gender      String  @default("Non-Binary")
   location  String?
   hasPrivateInsurance Boolean?
   insuranceProvider String?
@@ -26,7 +26,7 @@ model Patient {
 model Therapist {
   id        String    @id @default(uuid())
   name      String
-  email     String
+  email     String    @unique
   password  String
   phone     String
   bio       String
