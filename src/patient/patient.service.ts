@@ -10,8 +10,29 @@ export class PatientService {
     return await this.prisma.patient.findMany();
   }
 
+  async getPatientById(id: string): Promise<Patient> {
+    return await this.prisma.patient.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
+
   async createPatient(data: Prisma.PatientCreateInput): Promise<Patient> {
     return await this.prisma.patient.create({
+      data,
+    });
+  }
+
+  async updatePatient({
+    where,
+    data,
+  }: {
+    where: Prisma.PatientWhereUniqueInput;
+    data: Prisma.PatientUpdateInput;
+  }): Promise<Patient> {
+    return await this.prisma.patient.update({
+      where,
       data,
     });
   }
