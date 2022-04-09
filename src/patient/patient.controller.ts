@@ -21,6 +21,9 @@ export class PatientController {
     @Body() { email, password }: { email: string; password: string },
   ): Promise<PatientModel | HttpStatus> {
     const patient = await this.patientService.getPatientByEmail(email);
+    if (patient === null) {
+      return HttpStatus.NOT_FOUND;
+    }
     if (patient.password === password) {
       return patient;
     } else {
