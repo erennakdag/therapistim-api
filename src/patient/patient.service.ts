@@ -18,6 +18,14 @@ export class PatientService {
     });
   }
 
+  async getPatientByEmail(email: string): Promise<Patient> {
+    return await this.prisma.patient.findUnique({
+      where: {
+        email,
+      },
+    });
+  }
+
   async createPatient(data: Prisma.PatientCreateInput): Promise<Patient> {
     return await this.prisma.patient.create({
       data,

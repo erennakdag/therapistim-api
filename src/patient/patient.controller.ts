@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
 import { Prisma, Patient as PatientModel } from '@prisma/client';
 import { PatientService } from './patient.service';
 
@@ -14,6 +14,18 @@ export class PatientController {
   @Get(':id')
   async getPatientById(@Param('id') id: string): Promise<PatientModel> {
     return await this.patientService.getPatientById(id);
+  }
+
+  @Post('/validate')
+  async validatePatientByEmail(
+    @Body() { email, password }: { email: string; password: string },
+  ): Promise<PatientModel | HttpStatus> {
+    const patient = await this.patientService.getPatientByEmail(email);
+    if (patient.password === password) {
+      return patient;
+    } else {
+      return HttpStatus.UNAUTHORIZED;
+    }
   }
 
   @Post('/new')
