@@ -2,6 +2,8 @@ import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
 import { Prisma, Patient as PatientModel } from '@prisma/client';
 import { PatientService } from './patient.service';
 
+import { SHA256, enc } from 'crypto-js';
+
 @Controller('patients')
 export class PatientController {
   constructor(private readonly patientService: PatientService) {}
@@ -24,7 +26,7 @@ export class PatientController {
     if (patient === null) {
       return HttpStatus.NOT_FOUND;
     }
-    if (patient.password === password) {
+    if (patient.password === SHA256(password).toString(enc.Hex)) {
       return patient;
     } else {
       return HttpStatus.UNAUTHORIZED;
@@ -35,6 +37,10 @@ export class PatientController {
   async createPatient(
     @Body() data: Prisma.PatientCreateInput,
   ): Promise<PatientModel> {
+    // hashing the password
+    const hashedPassword = SHA256(data.password).toString(enc.Hex);
+    data.password = hashedPassword;
+
     return await this.patientService.createPatient(data);
   }
 
