@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Prisma, Patient as PatientModel } from '@prisma/client';
 import { PatientService } from './patient.service';
 
@@ -15,21 +23,25 @@ export class PatientController {
 
   @Get(':id')
   async getPatientById(@Param('id') id: string): Promise<PatientModel> {
-    return await this.patientService.getPatientById(id);
+    const patient = await this.patientService.getPatientById(id);
+    if (patient === null) {
+      throw new NotFoundException();
+    }
+    return patient;
   }
 
   @Post('/validate')
   async validatePatientByEmail(
     @Body() { email, password }: { email: string; password: string },
-  ): Promise<PatientModel | HttpStatus> {
+  ): Promise<PatientModel> {
     const patient = await this.patientService.getPatientByEmail(email);
     if (patient === null) {
-      return HttpStatus.NOT_FOUND;
+      throw new NotFoundException();
     }
     if (patient.password === SHA256(password).toString(enc.Hex)) {
       return patient;
     } else {
-      return HttpStatus.UNAUTHORIZED;
+      throw new UnauthorizedException();
     }
   }
 
