@@ -44,4 +44,12 @@ export class PatientService {
       data,
     });
   }
+
+  async deletePatient(id: string): Promise<Patient> {
+    return this.prisma.patient.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }

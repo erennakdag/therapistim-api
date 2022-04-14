@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
@@ -65,5 +66,14 @@ export class PatientController {
     },
   ): Promise<PatientModel> {
     return await this.patientService.updatePatient(body);
+  }
+
+  @Delete('/delete')
+  async deletePatient(@Body() { id }: { id: string }): Promise<PatientModel> {
+    try {
+      return await this.patientService.deletePatient(id);
+    } catch (error) {
+      throw new NotFoundException();
+    }
   }
 }
