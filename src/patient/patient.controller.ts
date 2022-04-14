@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -54,7 +55,11 @@ export class PatientController {
     const hashedPassword = SHA256(data.password).toString(enc.Hex);
     data.password = hashedPassword;
 
-    return await this.patientService.createPatient(data);
+    try {
+      return await this.patientService.createPatient(data);
+    } catch (error) {
+      throw new ConflictException();
+    }
   }
 
   @Post('/update')
@@ -68,8 +73,8 @@ export class PatientController {
     return await this.patientService.updatePatient(body);
   }
 
-  @Delete('/delete')
-  async deletePatient(@Body() { id }: { id: string }): Promise<PatientModel> {
+  @Delete('/delete/:id')
+  async deletePatient(@Param('id') id: string): Promise<PatientModel> {
     try {
       return await this.patientService.deletePatient(id);
     } catch (error) {
