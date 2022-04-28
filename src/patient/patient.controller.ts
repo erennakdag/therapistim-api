@@ -36,6 +36,7 @@ export class PatientController {
     try {
       return await this.patientService.createPatient(data);
     } catch (error) {
+      console.log(error);
       throw new ConflictException();
     }
   }
