@@ -40,11 +40,19 @@ export class PatientController {
     }
   }
 
+  /* 
+    When you call this function from the frontend client
+    as an API endpoint you pass in email,
+    when called from this class you pass in id.
+  */
   @Put('/validate')
-  async validatePatientByEmail(
-    @Body() { email, password }: { email: string; password: string },
+  async validatePatient(
+    @Body()
+    { id, email, password }: { id?: string; email?: string; password: string },
   ): Promise<PatientModel> {
-    const patient = await this.patientService.getPatientByEmail(email);
+    const patient = email
+      ? await this.patientService.getPatientByEmail(email)
+      : await this.patientService.getPatientById(id);
     if (patient === null) {
       throw new NotFoundException();
     }
@@ -67,14 +75,22 @@ export class PatientController {
   @Patch(':id')
   async updatePatient(
     @Param('id') id: string,
-    @Body() data: Prisma.PatientUpdateInput,
+    @Body()
+    body: {
+      passwordOld: string;
+      password?: string;
+      phone?: string;
+    },
   ): Promise<PatientModel> {
-    return await this.patientService.updatePatient({
-      where: {
-        id,
-      },
-      data,
-    });
+    const { passwordOld, ...data } = body;
+
+    if (await this.validatePatient({ id, password: passwordOld }))
+      return await this.patientService.updatePatient({
+        where: {
+          id,
+        },
+        data,
+      });
   }
 
   @Delete('/:id')
