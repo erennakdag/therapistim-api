@@ -87,7 +87,7 @@ export class PatientController {
     // hash the password
     data.password = data.password
       ? SHA256(data.password).toString(enc.Hex)
-      : null;
+      : undefined;
 
     if (await this.validatePatient({ id, password: passwordOld }))
       return await this.patientService.updatePatient({
