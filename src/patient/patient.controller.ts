@@ -84,6 +84,11 @@ export class PatientController {
   ): Promise<PatientModel> {
     const { passwordOld, ...data } = body;
 
+    // hash the password
+    data.password = data.password
+      ? SHA256(data.password).toString(enc.Hex)
+      : null;
+
     if (await this.validatePatient({ id, password: passwordOld }))
       return await this.patientService.updatePatient({
         where: {
