@@ -11,31 +11,28 @@ datasource db {
 }
 
 model Patient {
-  id        String    @id @default(uuid())
-  name      String
-  email     String    @unique
-  password  String
-  phone     String
+  id          String    @id @default(uuid())
+  name        String
+  email       String    @unique
+  password    String
+  phone       String
   dateOfBirth String
-  gender      String  @default("Non-Binary")
-  location  String?
-  hasPrivateInsurance Boolean?
-  insuranceProvider String?
+  gender      String    @default("Non-Binary")
 }
 
 model Therapist {
-  id        String    @id @default(uuid())
-  name      String
-  email     String    @unique
-  password  String
-  phone     String
-  bio       String
-  address   String
-  languages  Json
-  specialties Json
-  canWriteMedication Boolean
-  website String?
-  location  String?
+  id                      String    @id @default(uuid())
+  name                    String
+  email                   String    @unique
+  password                String
+  phone                   String
+  bio                     String
+  address                 String
+  institutionName         String?
+  languages               Json
+  specialties             Json
+  canWriteMedication      Boolean
+  website                 String?
+  location                String?
   acceptsPrivateInsurance Boolean?
-  insuranceProvider String?
 }
