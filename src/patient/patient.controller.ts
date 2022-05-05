@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   Patch,
@@ -37,6 +38,29 @@ export class PatientController {
       return await this.patientService.createPatient(data);
     } catch (error) {
       throw new ConflictException();
+    }
+  }
+
+  @Patch()
+  async updateForgottenPassword(
+    @Body() data: { email: string; password: string },
+  ): Promise<PatientModel> {
+    const { email } = data;
+
+    // hashing the new password
+    const password = SHA256(data.password).toString(enc.Hex);
+
+    try {
+      return this.patientService.updatePatient({
+        where: {
+          email,
+        },
+        data: {
+          password,
+        },
+      });
+    } catch (err) {
+      throw new InternalServerErrorException();
     }
   }
 
