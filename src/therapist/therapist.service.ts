@@ -14,6 +14,10 @@ export class TherapistService {
     return await this.prisma.therapist.findUnique({ where: { id } });
   }
 
+  async getTherapistByEmail(email: string): Promise<Therapist> {
+    return await this.prisma.therapist.findUnique({ where: { email } });
+  }
+
   async getTherapistByFilters(
     where: Prisma.TherapistWhereInput,
   ): Promise<Therapist[]> {
