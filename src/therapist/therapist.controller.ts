@@ -25,6 +25,8 @@ export class TherapistController {
     @Body()
     data: Prisma.TherapistCreateInput,
   ): Promise<TherapistModal> {
+    // hash the password
+    data.password = SHA256(data.password).toString(enc.Hex);
     return await this.therapistService.createTherapist(data);
   }
 
