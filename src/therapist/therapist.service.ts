@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, Therapist } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import axios from 'axios';
 
 @Injectable()
 export class TherapistService {
@@ -36,5 +37,19 @@ export class TherapistService {
     data: Prisma.TherapistUpdateInput;
   }): Promise<Therapist> {
     return await this.prisma.therapist.update({ where, data });
+  }
+
+  async getTherapistLocation(
+    adress: string,
+  ): Promise<{ latitude: number; longtitude: number }> {
+    const params = {
+      access_key: process.env.POSITIONSTACK_ACCESS_KEY,
+      query: adress,
+    };
+    const resp = await axios.get('http://api.positionstack.com/v1/forward', {
+      params,
+    });
+    const data = resp.data.data[0];
+    return { latitude: data.latitude, longtitude: data.longtitude };
   }
 }
