@@ -27,6 +27,14 @@ export class TherapistController {
   ): Promise<TherapistModal> {
     // hash the password
     data.password = SHA256(data.password).toString(enc.Hex);
+
+    // adress -> lat and long
+    const location = await this.therapistService.getTherapistLocation(
+      data.adress,
+    );
+    data.latitude = location.latitude;
+    data.longitude = location.longtitude;
+
     return await this.therapistService.createTherapist(data);
   }
 
