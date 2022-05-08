@@ -27,12 +27,13 @@ model Therapist {
   password                String
   phone                   String
   bio                     String
-  address                 String
+  adress                  String
   institutionName         String?
-  languages               Json
-  specialties             Json
+  languages               Json?
+  specialties             Json?
   canWriteMedication      Boolean
   website                 String?
-  location                String?
-  acceptsPrivateInsurance Boolean?
+  latitude                Float
+  longitude               Float
+  acceptsPrivateInsurance Boolean   @default(false)
 }
