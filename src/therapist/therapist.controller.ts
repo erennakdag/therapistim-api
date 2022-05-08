@@ -1,7 +1,9 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Get,
+  InternalServerErrorException,
   NotFoundException,
   Post,
   Put,
@@ -43,20 +45,27 @@ export class TherapistController {
     data.password = SHA256(data.password).toString(enc.Hex);
 
     // adress -> lat and long
-    const location = await this.therapistService.calcTherapistLocation(
-      data.adress,
-    );
+    let location: { latitude: any; longitude: any };
+    try {
+      location = await this.therapistService.calcTherapistLocation(data.adress);
+    } catch (e) {
+      throw new InternalServerErrorException();
+    }
 
     // separate languages and specialties from the rest for sanitization
     const { languages, specialties, ...endData } = data;
 
-    return await this.therapistService.createTherapist({
-      ...endData,
-      latitude: location.latitude,
-      longitude: location.longitude,
-      languages: this.therapistService.sanitizeCreateInput(languages),
-      specialties: this.therapistService.sanitizeCreateInput(specialties),
-    });
+    try {
+      return await this.therapistService.createTherapist({
+        ...endData,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        languages: this.therapistService.sanitizeCreateInput(languages),
+        specialties: this.therapistService.sanitizeCreateInput(specialties),
+      });
+    } catch (e) {
+      throw new ConflictException();
+    }
   }
 
   @Put('validate')
