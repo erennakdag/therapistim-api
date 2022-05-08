@@ -23,19 +23,40 @@ export class TherapistController {
   @Post()
   async createTherapist(
     @Body()
-    data: Prisma.TherapistCreateInput,
+    data: {
+      id?: string;
+      name: string;
+      email: string;
+      password: string;
+      phone: string;
+      bio: string;
+      adress: string;
+      institutionName?: string;
+      languages: string;
+      specialties: string;
+      canWriteMedication: boolean;
+      website?: string;
+      acceptsPrivateInsurance?: boolean;
+    },
   ): Promise<TherapistModal> {
     // hash the password
     data.password = SHA256(data.password).toString(enc.Hex);
 
     // adress -> lat and long
-    const location = await this.therapistService.getTherapistLocation(
+    const location = await this.therapistService.calcTherapistLocation(
       data.adress,
     );
-    data.latitude = location.latitude;
-    data.longitude = location.longtitude;
 
-    return await this.therapistService.createTherapist(data);
+    // separate languages and specialties from the rest for sanitization
+    const { languages, specialties, ...endData } = data;
+
+    return await this.therapistService.createTherapist({
+      ...endData,
+      latitude: location.latitude,
+      longitude: location.longtitude,
+      languages: this.therapistService.sanitizeCreateInput(languages),
+      specialties: this.therapistService.sanitizeCreateInput(specialties),
+    });
   }
 
   @Put('validate')

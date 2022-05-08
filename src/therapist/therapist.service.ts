@@ -39,7 +39,7 @@ export class TherapistService {
     return await this.prisma.therapist.update({ where, data });
   }
 
-  async getTherapistLocation(
+  async calcTherapistLocation(
     adress: string,
   ): Promise<{ latitude: number; longtitude: number }> {
     const params = {
@@ -51,5 +51,13 @@ export class TherapistService {
     });
     const data = resp.data.data[0];
     return { latitude: data.latitude, longtitude: data.longtitude };
+  }
+
+  sanitizeCreateInput(input: string): string[] {
+    if (!input.length) return [];
+
+    const values = input.split(',');
+    values.forEach((value) => value.trim());
+    return values;
   }
 }
