@@ -33,7 +33,7 @@ model Therapist {
   specialties             Json?
   canWriteMedication      Boolean
   website                 String?
-  latitude                Int
-  longitude               Int
+  latitude                Float
+  longitude               Float
   acceptsPrivateInsurance Boolean   @default(false)
 }

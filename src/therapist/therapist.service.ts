@@ -41,7 +41,7 @@ export class TherapistService {
 
   async calcTherapistLocation(
     adress: string,
-  ): Promise<{ latitude: number; longtitude: number }> {
+  ): Promise<{ latitude: number; longitude: number }> {
     const params = {
       access_key: process.env.POSITIONSTACK_ACCESS_KEY,
       query: adress,
@@ -50,7 +50,7 @@ export class TherapistService {
       params,
     });
     const data = resp.data.data[0];
-    return { latitude: data.latitude, longtitude: data.longtitude };
+    return { latitude: data.latitude, longitude: data.longitude };
   }
 
   sanitizeCreateInput(input: string): string[] {

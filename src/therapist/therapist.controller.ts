@@ -53,7 +53,7 @@ export class TherapistController {
     return await this.therapistService.createTherapist({
       ...endData,
       latitude: location.latitude,
-      longitude: location.longtitude,
+      longitude: location.longitude,
       languages: this.therapistService.sanitizeCreateInput(languages),
       specialties: this.therapistService.sanitizeCreateInput(specialties),
     });
