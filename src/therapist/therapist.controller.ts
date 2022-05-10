@@ -5,6 +5,7 @@ import {
   Get,
   InternalServerErrorException,
   NotFoundException,
+  Patch,
   Post,
   Put,
   UnauthorizedException,
@@ -65,6 +66,29 @@ export class TherapistController {
       });
     } catch (e) {
       throw new ConflictException();
+    }
+  }
+
+  @Patch()
+  async updateForgottenPassword(
+    @Body() data: { email: string; password: string },
+  ): Promise<TherapistModal> {
+    const { email } = data;
+
+    // hashing the new password
+    const password = SHA256(data.password).toString(enc.Hex);
+
+    try {
+      return this.therapistService.updateTherapist({
+        where: {
+          email,
+        },
+        data: {
+          password,
+        },
+      });
+    } catch (err) {
+      throw new InternalServerErrorException();
     }
   }
 
