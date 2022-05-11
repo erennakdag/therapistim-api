@@ -5,6 +5,7 @@ import {
   Get,
   InternalServerErrorException,
   NotFoundException,
+  Param,
   Patch,
   Post,
   Put,
@@ -105,6 +106,15 @@ export class TherapistController {
       return therapist;
     } else {
       throw new UnauthorizedException();
+    }
+  }
+
+  @Get(':id')
+  async getTherapistById(@Param('id') id: string): Promise<TherapistModal> {
+    try {
+      return await this.therapistService.getTherapistById(id);
+    } catch (e) {
+      throw new NotFoundException();
     }
   }
 }
