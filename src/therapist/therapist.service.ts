@@ -57,7 +57,6 @@ export class TherapistService {
     if (!input.length) return [];
 
     const values = input.split(',');
-    values.forEach((value) => value.trim());
-    return values;
+    return values.map((value) => value.trim());
   }
 }
