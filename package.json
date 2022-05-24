@@ -32,6 +32,7 @@
     "rxjs": "^7.2.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.0.1",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
@@ -75,5 +76,8 @@
   },
   "engines": {
     "node": "16.x"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
