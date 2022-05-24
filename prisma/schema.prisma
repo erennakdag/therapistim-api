@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -29,8 +30,8 @@ model Therapist {
   bio                     String
   adress                  String
   institutionName         String?
-  languages               Json?
-  specialties             Json?
+  languages               String[]
+  specialties             String[]
   canWriteMedication      Boolean
   website                 String?
   latitude                Float
