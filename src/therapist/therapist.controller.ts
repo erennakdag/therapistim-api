@@ -2,6 +2,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  Delete,
   Get,
   InternalServerErrorException,
   NotFoundException,
@@ -113,6 +114,15 @@ export class TherapistController {
   async getTherapistById(@Param('id') id: string): Promise<TherapistModal> {
     try {
       return await this.therapistService.getTherapistById(id);
+    } catch (e) {
+      throw new NotFoundException();
+    }
+  }
+
+  @Delete(':id')
+  async deleteTherapistById(@Param('id') id: string): Promise<TherapistModal> {
+    try {
+      return await this.therapistService.deleteTherapist(id);
     } catch (e) {
       throw new NotFoundException();
     }

@@ -39,6 +39,10 @@ export class TherapistService {
     return await this.prisma.therapist.update({ where, data });
   }
 
+  async deleteTherapist(id: string): Promise<Therapist> {
+    return await this.prisma.therapist.delete({ where: { id } });
+  }
+
   async calcLatLongFromAdress(
     adress: string,
   ): Promise<{ latitude: number; longitude: number }> {
