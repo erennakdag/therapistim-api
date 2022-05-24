@@ -57,7 +57,6 @@ export class TherapistService {
     // sanitizes the input given by the user and turns the string into an array
     if (!input.length) return [];
 
-    const values = input.split(',');
-    return values.map((value) => value.trim());
+    return input.split(',').map((value) => value.trim());
   }
 }
