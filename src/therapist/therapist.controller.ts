@@ -49,7 +49,7 @@ export class TherapistController {
     // adress -> lat and long
     let location: { latitude: any; longitude: any };
     try {
-      location = await this.therapistService.calcTherapistLocation(data.adress);
+      location = await this.therapistService.calcLatLongFromAdress(data.adress);
     } catch (e) {
       throw new InternalServerErrorException();
     }

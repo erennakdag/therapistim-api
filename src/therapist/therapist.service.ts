@@ -39,7 +39,7 @@ export class TherapistService {
     return await this.prisma.therapist.update({ where, data });
   }
 
-  async calcTherapistLocation(
+  async calcLatLongFromAdress(
     adress: string,
   ): Promise<{ latitude: number; longitude: number }> {
     const params = {
@@ -54,6 +54,7 @@ export class TherapistService {
   }
 
   sanitizeCreateInput(input: string): string[] {
+    // sanitizes the input given by the user and turns the string into an array
     if (!input.length) return [];
 
     const values = input.split(',');
