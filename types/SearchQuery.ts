@@ -1,4 +1,4 @@
-export default interface SearchParams {
+export default interface SearchQuery {
   input?: string;
   place: string;
   radius: number;
