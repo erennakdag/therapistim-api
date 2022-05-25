@@ -10,14 +10,17 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   UnauthorizedException,
 } from '@nestjs/common';
 import { TherapistService } from './therapist.service';
 import { Prisma, Therapist as TherapistModal } from '@prisma/client';
 import { enc, SHA256 } from 'crypto-js';
 import CustomTherapistCreateInput from 'types/CustomTherapistCreateInput';
+import SearchQuery from 'types/SearchQuery';
+import Location from 'types/Location';
 
-@Controller('therapist')
+@Controller('therapists')
 export class TherapistController {
   constructor(private readonly therapistService: TherapistService) {}
 
@@ -35,7 +38,7 @@ export class TherapistController {
     data.password = SHA256(data.password).toString(enc.Hex);
 
     // adress -> lat and long
-    let location: { latitude: any; longitude: any };
+    let location: Location;
     try {
       location = await this.therapistService.calcLatLongFromAdress(data.adress);
     } catch (e) {
@@ -113,5 +116,13 @@ export class TherapistController {
     } catch (e) {
       throw new NotFoundException();
     }
+  }
+
+  @Get('search')
+  async searchTherapist(
+    @Query() query: SearchQuery,
+  ): Promise<TherapistModal[]> {
+    console.log(query);
+    return await this.therapistService.searchTherapists(query);
   }
 }
