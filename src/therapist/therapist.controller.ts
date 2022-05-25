@@ -15,6 +15,7 @@ import {
 import { TherapistService } from './therapist.service';
 import { Prisma, Therapist as TherapistModal } from '@prisma/client';
 import { enc, SHA256 } from 'crypto-js';
+import CustomTherapistCreateInput from 'types/CustomTherapistCreateInput';
 
 @Controller('therapist')
 export class TherapistController {
@@ -28,21 +29,7 @@ export class TherapistController {
   @Post()
   async createTherapist(
     @Body()
-    data: {
-      id?: string;
-      name: string;
-      email: string;
-      password: string;
-      phone: string;
-      bio: string;
-      adress: string;
-      institutionName?: string;
-      languages: string;
-      specialties: string;
-      canWriteMedication: boolean;
-      website?: string;
-      acceptsPrivateInsurance?: boolean;
-    },
+    data: CustomTherapistCreateInput,
   ): Promise<TherapistModal> {
     // hash the password
     data.password = SHA256(data.password).toString(enc.Hex);
