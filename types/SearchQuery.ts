@@ -1,9 +1,9 @@
 export default interface SearchQuery {
-  input?: string;
-  place: string;
+  name?: string;
+  adress: string;
   radius: number;
-  languages?: string[];
-  specialties?: string[];
+  languages?: string;
+  specialties?: string;
   acceptsPrivateInsurance?: boolean;
   canWriteMedication?: boolean;
 }

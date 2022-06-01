@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, Therapist } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import axios from 'axios';
-import getDistance from 'geolib/es/getPreciseDistance';
+import { getDistance } from 'geolib';
 import SearchQuery from 'types/SearchQuery';
 import Location from 'types/Location';
 
@@ -23,46 +23,46 @@ export class TherapistService {
   }
 
   async searchTherapists(query: SearchQuery): Promise<Therapist[]> {
-    const {
-      place,
-      radius,
-      input,
-      languages,
-      specialties,
-      acceptsPrivateInsurance,
-      canWriteMedication,
-    } = query;
+    const { adress, radius, name, languages, specialties } = query;
+
+    const acceptsPrivateInsurance = Boolean(query.acceptsPrivateInsurance);
+    const canWriteMedication = Boolean(query.canWriteMedication);
 
     // getting the user's location to find the nearest therapists
-    const location = await this.calcLatLongFromAdress(place);
+    const location = await this.calcLatLongFromAdress(adress);
 
-    const filteredTherapists = await this.prisma.therapist.findMany({
-      where: {
-        name: {
-          search: input,
-        },
-        institutionName: {
-          search: input,
-        },
-        adress: {
-          search: input,
-        },
-        languages: {
-          hasSome: languages,
-        },
-        specialties: {
-          hasSome: specialties,
-        },
-        acceptsPrivateInsurance,
-        canWriteMedication,
-      },
-    });
+    const therapists = await this.prisma.therapist.findMany();
 
-    return filteredTherapists.filter((therapist) => {
-      getDistance(location, {
+    return therapists.filter((therapist) => {
+      if (name && !therapist.name.toLowerCase().includes(name.toLowerCase())) {
+        return false;
+      }
+
+      if (languages && !therapist.languages.includes(languages)) {
+        return false;
+      }
+
+      if (specialties && !therapist.specialties.includes(specialties)) {
+        return false;
+      }
+
+      if (
+        acceptsPrivateInsurance &&
+        acceptsPrivateInsurance !== therapist.acceptsPrivateInsurance
+      )
+        return false;
+
+      if (
+        canWriteMedication &&
+        canWriteMedication !== therapist.canWriteMedication
+      )
+        return false;
+
+      const distance = getDistance(location, {
         latitude: therapist.latitude,
         longitude: therapist.longitude,
-      }) <= radius;
+      });
+      return distance <= radius;
     });
   }
 
