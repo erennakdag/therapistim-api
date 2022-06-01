@@ -14,7 +14,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { TherapistService } from './therapist.service';
-import { Prisma, Therapist as TherapistModal } from '@prisma/client';
+import { Therapist as TherapistModal } from '@prisma/client';
 import { enc, SHA256 } from 'crypto-js';
 import CustomTherapistCreateInput from 'types/CustomTherapistCreateInput';
 import SearchQuery from 'types/SearchQuery';
@@ -118,11 +118,16 @@ export class TherapistController {
     }
   }
 
-  @Get('search')
+  @Get('search/search')
   async searchTherapist(
-    @Query() query: SearchQuery,
+    @Query()
+    query: SearchQuery,
   ): Promise<TherapistModal[]> {
     console.log(query);
-    return await this.therapistService.searchTherapists(query);
+    try {
+      return await this.therapistService.searchTherapists(query);
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
