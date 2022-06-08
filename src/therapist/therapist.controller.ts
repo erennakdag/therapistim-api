@@ -25,8 +25,12 @@ export class TherapistController {
   constructor(private readonly therapistService: TherapistService) {}
 
   @Get()
-  async getTherapists(): Promise<TherapistModal[]> {
-    return await this.therapistService.getTherapists();
+  async getTherapists(@Query() query: SearchQuery): Promise<TherapistModal[]> {
+    try {
+      return await this.therapistService.searchTherapists(query);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   @Post()
@@ -115,19 +119,6 @@ export class TherapistController {
       return await this.therapistService.deleteTherapist(id);
     } catch (e) {
       throw new NotFoundException();
-    }
-  }
-
-  @Get('search/search')
-  async searchTherapist(
-    @Query()
-    query: SearchQuery,
-  ): Promise<TherapistModal[]> {
-    console.log(query);
-    try {
-      return await this.therapistService.searchTherapists(query);
-    } catch (e) {
-      console.log(e);
     }
   }
 }

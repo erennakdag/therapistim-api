@@ -23,17 +23,26 @@ export class TherapistService {
   }
 
   async searchTherapists(query: SearchQuery): Promise<Therapist[]> {
+    // destructuring the query object
     const { adress, radius, name, languages, specialties } = query;
-
+    // boolean values need to be individually separated, for reasons beyond me
     const acceptsPrivateInsurance = Boolean(query.acceptsPrivateInsurance);
     const canWriteMedication = Boolean(query.canWriteMedication);
 
-    // getting the user's location to find the nearest therapists
-    const location = await this.calcLatLongFromAdress(adress);
+    /* 
+      getting the user's location to find the nearest therapists
+      adress may not be given, in that case we set location null
+      later on location being null will make us skip filtering by distance
+    */
+    const location = adress ? await this.calcLatLongFromAdress(adress) : null;
 
+    // getting all the therapists in the database
     const therapists = await this.prisma.therapist.findMany();
 
+    // returning the filtered therapists array
     return therapists.filter((therapist) => {
+      // even one unmet criteria results in getting filtered out
+
       if (name && !therapist.name.toLowerCase().includes(name.toLowerCase())) {
         return false;
       }
@@ -58,11 +67,19 @@ export class TherapistService {
       )
         return false;
 
-      const distance = getDistance(location, {
-        latitude: therapist.latitude,
-        longitude: therapist.longitude,
-      });
-      return distance <= radius;
+      /*
+        if location doesn't exist, no need to check for the distance (since we can't)
+        so just return !location == true
+        otherwise filter by distance
+      */
+      return (
+        !location ||
+        therapist.adress.toLowerCase().includes(adress.toLowerCase()) ||
+        getDistance(location, {
+          latitude: therapist.latitude,
+          longitude: therapist.longitude,
+        }) <= radius
+      );
     });
   }
 
