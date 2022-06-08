@@ -30,6 +30,7 @@ export class TherapistController {
       return await this.therapistService.searchTherapists(query);
     } catch (e) {
       console.log(e);
+      throw new InternalServerErrorException();
     }
   }
 
